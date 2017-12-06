@@ -1,0 +1,50 @@
+# Contributor:
+# Maintainer: Jonathan Sieber <mail@strfry.org>
+pkgname=baresip
+pkgver=0.5.6
+pkgrel=0
+pkgdesc="Baresip is a portable and modular SIP User-Agent with audio and video support."
+url="http://www.creytiv.com/baresip.html"
+arch="all"
+license="BSD"
+depends="re rem alsa-lib speex speexdsp opus libvpx x264 ffmpeg libsndfile"
+makedepends="re-dev rem-dev alsa-lib-dev speex-dev speexdsp-dev opus-dev x264-dev ffmpeg-dev libvpx-dev
+	libx11-dev libxext-dev avahi-dev libsndfile-dev"
+install=""
+options="!check"
+subpackages="$pkgname-dev $pkgname-x11 $pkgname-avahi"
+source="http://www.creytiv.com/pub/baresip-0.5.6.tar.gz
+	fix-install-syntax.patch"
+builddir="$srcdir/$pkgname-$pkgver"
+
+
+build() {
+	cd "$builddir"
+	make || return 1
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install install-dev || return 1
+}
+
+avahi() {
+	pkgdesc="baresip avahi/Zeroconf discovery support"
+	depends="$pkgname avahi"
+	mkdir -p "$subpkgdir"/usr/lib/baresip/modules
+	mv "$pkgdir"/usr/lib/baresip/modules/avahi.so \
+		"$subpkgdir"/usr/lib/baresip/modules || return 1
+}
+
+x11() {
+	pkgdesc="baresip X11 video display and source module"
+	depends="$pkgname libx11 libxext"
+	mkdir -p "$subpkgdir"/usr/lib/baresip/modules
+	mv "$pkgdir"/usr/lib/baresip/modules/x11.so \
+		"$pkgdir"/usr/lib/baresip/modules/x11grab.so \
+		"$subpkgdir"/usr/lib/baresip/modules || return 1
+}
+
+
+sha512sums="7399920d4383f74c5988f94ce3cec9fa49bacde307eefae79b2528b610b8014ba92ded17c18dffa3059a225b40b2ccae89d1d6f3e317c73e832891cef30d62e1  baresip-0.5.6.tar.gz
+3b5c617f28be4bc54be4ec0e788f4b185eedfba7871580b7b750535a68070d920a14ecba28b9d4ee6d4ecc012d41939171c21f90b355cb1c50241482872abecb  fix-install-syntax.patch"
