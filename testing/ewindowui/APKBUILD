@@ -1,0 +1,34 @@
+# Contributor:
+# Maintainer: Jonathan Sieber <mail@strfry.org>
+pkgname=ewindowui
+pkgver=0.3
+pkgrel=0
+pkgdesc="ewindow is a portable and modular SIP User-Agent with audio and video support."
+url="http://ewindow.org"
+arch="all"
+license="BSD"
+depends="qt5-qtdeclarative re rem baresip"
+makedepends="qt5-qtdeclarative-dev re-dev rem-dev baresip-dev"
+install=""
+options="!check"
+source="$pkgname-$pkgver.tar.gz::http://github.com/strfry/ewindowui/archive/v$pkgver.tar.gz
+	build-no-deps.patch"
+
+
+build() {
+	cd "$builddir"
+	qmake-qt5 PREFIX="$pkgdir" || return 1
+	make || return 1
+}
+
+package() {
+	cd "$builddir"
+	install -d "$pkgdir"/usr/ewindow/
+	install -m 0755 ewindow "$pkgdir"/usr/ewindow/
+        install -d "$pkgdir"/usr/ewindow/gui
+	install gui/* "$pkgdir"/usr/ewindow/gui
+#	make DESTDIR="$pkgdir" install || return 1
+}
+
+sha512sums="349d1737f5b9eefe7d43c6aaace6153aedf14c898363514ae6c5bc0fafd19fd28bf48ba203561e92eb426863126ddab78e21cc23bc715a8d22c178d361af9cb4  ewindowui-0.3.tar.gz
+15a0c35f39655868256fcd73d2dba8f386c8a9adb5eb7df75a44416b4223b98a4876d4241b23ed105da43070cd9a0b74f9612df9db2dbb1193a67d3e503423a4  build-no-deps.patch"
