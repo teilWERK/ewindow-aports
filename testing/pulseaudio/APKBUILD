@@ -10,10 +10,11 @@ arch="all !s390x"
 license="LGPL"
 makedepends="m4 automake libtool intltool bash
 	dbus-dev libcap-dev alsa-lib-dev bluez-dev speexdsp-dev avahi-dev libressl-dev eudev-dev
-	libsndfile-dev gtk+3.0-dev json-c-dev fftw-dev gconf-dev sbc-dev jack-dev"
+	libsndfile-dev gtk+3.0-dev json-c-dev fftw-dev gconf-dev sbc-dev jack-dev webrtc-audio-processing-dev"
 install=""
 subpackages="$pkgname-dev $pkgname-doc $pkgname-libs $pkgname-bluez
 	$pkgname-alsa $pkgname-utils $pkgname-jack $pkgname-zeroconf $pkgname-system
+	$pkgname-webrtc
 	$pkgname-bash-completion:bashcomp $pkgname-zsh-completion:zshcomp"
 source="http://freedesktop.org/software/pulseaudio/releases/pulseaudio-$pkgver.tar.xz
 	0001-padsp-Make-it-compile-on-musl.patch
@@ -86,6 +87,14 @@ alsa() {
 	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
 	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*alsa*.so \
 		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/ || return 1
+}
+
+webrtc() {
+	pkgdesc="Pulseaudio WebRTC Acoustic Echo Cancellation support"
+	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
+	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*webrtc*.so \
+		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/ || return 1
+
 }
 
 utils() {
