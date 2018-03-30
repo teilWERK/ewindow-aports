@@ -12,39 +12,22 @@ makedepends="re-dev rem-dev alsa-lib-dev opus-dev x264-dev ffmpeg-dev libvpx-dev
 	avahi-dev libsndfile-dev pulseaudio-dev"
 install=""
 options="!check"
-subpackages="$pkgname-dev $pkgname-x11 $pkgname-avahi"
-source="http://www.creytiv.com/pub/baresip-0.5.6.tar.gz
+subpackages="$pkgname-dev"
+source="http://www.creytiv.com/pub/$pkgname-$pkgver.tar.gz
 	fix-install-syntax.patch"
 builddir="$srcdir/$pkgname-$pkgver"
 
 
 build() {
 	cd "$builddir"
-	make || return 1
+	make STATIC=1 || return 1
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install install-dev || return 1
+	make STATIC=1 DESTDIR="$pkgdir" install-shared || return 1
+#	make DESTDIR="$pkgdir" install | return 1
 }
 
-avahi() {
-	pkgdesc="baresip avahi/Zeroconf discovery support"
-	depends="$pkgname avahi"
-	mkdir -p "$subpkgdir"/usr/lib/baresip/modules
-	mv "$pkgdir"/usr/lib/baresip/modules/avahi.so \
-		"$subpkgdir"/usr/lib/baresip/modules || return 1
-}
-
-x11() {
-	pkgdesc="baresip X11 video display and source module"
-	depends="$pkgname libx11 libxext"
-	mkdir -p "$subpkgdir"/usr/lib/baresip/modules
-	mv "$pkgdir"/usr/lib/baresip/modules/x11.so \
-		"$pkgdir"/usr/lib/baresip/modules/x11grab.so \
-		"$subpkgdir"/usr/lib/baresip/modules || return 1
-}
-
-
-sha512sums="7399920d4383f74c5988f94ce3cec9fa49bacde307eefae79b2528b610b8014ba92ded17c18dffa3059a225b40b2ccae89d1d6f3e317c73e832891cef30d62e1  baresip-0.5.6.tar.gz
+sha512sums="234e2331e1195eb2ecf8142e75a6a32eee4f68dd709bbb32b31570dedd43f95940cd513139ea151f7255863751508ee733d4e6a57990075807552fa873057343  baresip-0.5.8.tar.gz
 3b5c617f28be4bc54be4ec0e788f4b185eedfba7871580b7b750535a68070d920a14ecba28b9d4ee6d4ecc012d41939171c21f90b355cb1c50241482872abecb  fix-install-syntax.patch"
