@@ -10,9 +10,15 @@ license="BSD"
 depends="re rem alsa-lib opus libvpx x264 ffmpeg libsndfile"
 makedepends="re-dev rem-dev alsa-lib-dev opus-dev x264-dev ffmpeg-dev libvpx-dev
 	avahi-dev libsndfile-dev pulseaudio-dev"
+if [ $CBUILD = "armv6-alpine-linux-musleabihf" ]; then
+makedepends="$makedepends raspberrypi-dev"
+fi
+
 install=""
 options="!check"
 subpackages="$pkgname-dev"
+#subpackages="$pkgname-dev $pkgname-omx"
+
 source="http://www.creytiv.com/pub/$pkgname-$pkgver.tar.gz
 	fix-install-syntax.patch"
 builddir="$srcdir/$pkgname-$pkgver"
@@ -22,6 +28,13 @@ build() {
 	cd "$builddir"
 	make STATIC=1 || return 1
 }
+
+#omx() {
+#	pkgdesc="baresip Raspberry Pi OMX video output"
+#	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
+#	mv "$pkgdir"/usr/lib/baresip/modules/omx.so \
+#		"$subpkgdir"/usr/lib/baresip/modules/ || return 1
+#}
 
 package() {
 	cd "$builddir"
