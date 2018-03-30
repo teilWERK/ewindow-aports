@@ -6,6 +6,7 @@ pkgdesc="Audio Processing Algorithms from Google's WebRTC Project"
 url="https://www.freedesktop.org/software/pulseaudio/webrtc-audio-processing/"
 arch="all"
 license="BSD"
+makedepends="linux-headers"
 subpackages="$pkgname-dev $pkgname-doc"
 source="http://freedesktop.org/software/pulseaudio/webrtc-audio-processing/$pkgname-$pkgver.tar.xz
 	fix-glibcxx-macro.patch"
