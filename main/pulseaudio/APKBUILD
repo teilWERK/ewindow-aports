@@ -95,8 +95,8 @@ webrtc() {
 	pkgdesc="Pulseaudio WebRTC Acoustic Echo Cancellation support"
 	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
 	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*webrtc*.so \
+		"$pkgdir"/usr/lib/pulse-$pkgver/modules/*echo-cancel*.so \
 		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/ || return 1
-
 }
 
 utils() {
