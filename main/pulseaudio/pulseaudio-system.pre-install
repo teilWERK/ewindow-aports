@@ -9,5 +9,6 @@ adduser -S -D -H \
 	-G pulse \
 	-g "Pulseaudio System User" \
 	pulse 2>/dev/null
+adduser pulse audio 2>/dev/null
 
 exit 0
