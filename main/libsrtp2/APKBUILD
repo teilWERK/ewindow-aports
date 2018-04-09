@@ -1,0 +1,43 @@
+# Contributor: Jonathan Sieber <mail@strfry.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libsrtp2
+pkgver=2.0.0
+pkgrel=0
+pkgdesc="An implementation of the Secure Real-time Transport Protocol (SRTP)"
+url="https://github.com/cisco/libsrtp"
+arch="all"
+license="BSD"
+depends="libressl"
+depends_dev=""
+makedepends="$depends_dev automake autoconf libtool libressl-dev"
+install=""
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/cisco/libsrtp/archive/v$pkgver.tar.gz"
+
+builddir="$srcdir"/libsrtp-$pkgver
+
+build() {
+	cd "$builddir"
+	update_config_guess || return 1
+	./configure --prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--enable-openssl \
+		|| return 1
+	make || return 1
+	make shared_library || return 1 # .so's don't appear otherwise...
+}
+
+check() {
+	cd "$builddir"
+	make runtest || return 1
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install || return 1
+}
+
+sha512sums="61bba9aba9bb3e888c2bbc150411d0b3d583ed71ca455c5a3d4d6d06ecd383fdd61f86ad1979fb9c04da1b824e3fb9bb63f0d97e50b4a469d56907fb9dbc42d6  libsrtp2-2.0.0.tar.gz"
