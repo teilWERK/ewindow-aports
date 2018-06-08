@@ -1,0 +1,35 @@
+# Maintainer: Jonathan Sieber <mail@strfry.org>
+pkgname=ToxBlinkenwall
+pkgver=0.1
+pkgrel=0
+pkgdesc="Tox based eWindow"
+org=strfry
+ref=c481feb
+url="https://github.com/zoff99/ToxBlinkenwall"
+arch="all"
+license="GPL"
+depends=""
+makedepends="meson libsodium-dev libvpx-dev x264-dev ffmpeg-dev opus-dev v4l-utils-dev raspberrypi-dev"
+source="$org-$pkgname-$ref.tar.gz::https://api.github.com/repos/strfry/ToxBlinkenwall/tarball/$ref"
+builddir="$srcdir/$org-$pkgname-$ref"
+
+build() {
+	cd "$builddir"/
+	export PKG_CONFIG_PATH=/opt/vc/lib/pkgconfig # Find RPI's special libs
+	meson toxblinkenwall build || return 1
+	ninja -C build
+}
+
+package() {
+	mkdir -p $pkgdir/usr/bin
+	mkdir -p $pkgdir/usr/share/toxblinkenwall
+	install "$builddir"/build/toxblinkenwall $pkgdir/usr/bin || return 1
+	install -d  $pkgdir/usr/share/toxblinkenwall/gfx || return 1
+	install "$builddir"/toxblinkenwall/*.sh $pkgdir/usr/share/toxblinkenwall/ || return 1
+	install "$builddir"/toxblinkenwall/gfx/* $pkgdir/usr/share/toxblinkenwall/gfx || return 1
+	install "$builddir"/toxblinkenwall/*.png $pkgdir/usr/share/toxblinkenwall || return 1
+
+	ln -s ../../bin/toxblinkenwall $pkgdir/usr/share/toxblinkenwall
+}
+
+sha512sums="e0848e02213740edd5d8dd18ad3e6feb389b2f072cdc8ec4cefadb42f8b707d6eacd767800d11d942f106b977061e19e946afec1eb39dd9c5dcea6b008e20e89  strfry-ToxBlinkenwall-c481feb.tar.gz"
