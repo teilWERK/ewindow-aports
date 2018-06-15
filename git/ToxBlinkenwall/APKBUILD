@@ -1,0 +1,58 @@
+# foo
+
+pkgname=ToxBlinkenwall
+pkgver=0.0.1
+pkgdesc="Git master build of ToxBlinkenwall"
+url=https://github.com/zoff99/ToxBlinkenwall
+giturl="https://github.com/strfry/ToxBlinkenwall -b meson"
+license=GPL
+options=!check
+arch=all
+
+builddir="$srcdir/$pkgname"
+
+makedepends="meson libsodium-dev libvpx-dev x264-dev ffmpeg-dev opus-dev v4l-utils-dev"
+
+checkout() {
+	mkdir -p "$srcdir"
+	cd "$srcdir"
+#	rm -rf $builddir
+	git clone ${giturl}
+	cd "$builddir"
+	pkgrel=$(git log --pretty=oneline | wc -l)
+
+	git archive --prefix=$_pkgname/ -o "$SRCDEST"/$_pkgname-$_pkgver.tar.gz meson
+}
+
+checkout || echo
+
+clean() { 
+	cd "$builddir"
+#	rm -rf build
+}
+#unpack() {
+	
+#}
+
+build() {
+	cd "$builddir"
+	meson -Dtoxcore:h264_omx=false toxblinkenwall build
+	ninja -C build
+}
+
+package() {
+        mkdir -p $pkgdir/usr/bin
+        mkdir -p $pkgdir/usr/share/toxblinkenwall
+        install "$builddir"/build/toxblinkenwall $pkgdir/usr/bin || return 1
+        install -d  $pkgdir/usr/share/toxblinkenwall/gfx || return 1
+#        install -d  $pkgdir/usr/share/toxblinkenwall/scripts || return 1
+        install "$builddir"/toxblinkenwall/*.sh $pkgdir/usr/share/toxblinkenwall/ || return 1
+        install "$builddir"/toxblinkenwall/gfx/* $pkgdir/usr/share/toxblinkenwall/gfx || return 1
+#        install "$builddir"/toxblinkenwall/scripts/* $pkgdir/usr/share/toxblinkenwall/scripts || return 1
+        install "$builddir"/toxblinkenwall/*.png $pkgdir/usr/share/toxblinkenwall || return 1
+
+        ln -s ../../bin/toxblinkenwall $pkgdir/usr/share/toxblinkenwall
+}
+
+
+#checkout
